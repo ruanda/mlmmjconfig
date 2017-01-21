@@ -2,6 +2,7 @@ package mlmmjconfig
 
 import (
     "fmt"
+    "io/ioutil"
     "os"
 )
 
@@ -21,3 +22,16 @@ func Open(baseDir string) (*MlmmjConfig, error) {
     return &c, nil
 }
 
+func (c *MlmmjConfig) Lists() ([]MlmmjList, error) {
+    var result []MlmmjList
+    files, err := ioutil.ReadDir(c.baseDir)
+    if err != nil {
+        return nil, err
+    }
+    for _, f := range files {
+        if f.IsDir() {
+            result = append(result, MlmmjList{f.Name()})
+        }
+    }
+    return result, nil
+}
